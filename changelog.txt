@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.12
+Date: 2026-06-26
+  Changes:
+    - Factorio 2.1 support.
+    - Consider both real and ghost entities when looking for fluid connections.
+---------------------------------------------------------------------------------------------------
 Version: 2.0.11
 Date: 2025-06-11
   Changes:
@@ -130,4 +136,3 @@ Date: 2020-09-06
     - Automatically place a pipe when two undergrounds are placed at a corner or one space apart
   Other:
     - First version!
-
