@@ -47,11 +47,21 @@ local function entity_type_or_ghost_type(entity)
     return entity.type == "entity-ghost" and entity.ghost_type or entity.type
 end
 
+--- Get the entity prototype that has fluidbox info, handling entity-ghost.
+---@param entity LuaEntity
+---@return LuaEntityPrototype?
+local function get_fluidbox_prototype(entity)
+    if entity.type == "entity-ghost" then
+        return entity.ghost_prototype
+    end
+    return entity.prototype
+end
+
 ---@param entity LuaEntity
 ---@param position MapPosition
 ---@return boolean place
 local function should_place_based_on_neighbor_fluidbox_prototypes(entity, position)
-    local fluidbox_prototypes = entity.prototype.fluidbox_prototypes
+    local fluidbox_prototypes = get_fluidbox_prototype(entity).fluidbox_prototypes
     if not fluidbox_prototypes then return false end
     for i = 1, #fluidbox_prototypes do
         local pipe_connections = fluidbox_prototypes[i].pipe_connections
