@@ -54,12 +54,26 @@ local function should_place_based_on_neighbor_fluidbox_prototypes(entity, positi
     local fluidbox_prototypes = entity.prototype.fluidbox_prototypes
     if not fluidbox_prototypes then return false end
     for i = 1, #fluidbox_prototypes do
-        for _, pipe_connection in pairs(fluidbox_prototypes[i].pipe_connections) do
-            local offset = pipe_connection.positions[1]
-            local dir_vec = util.direction_vectors[pipe_connection.direction]
+        local pipe_connections = fluidbox_prototypes[i].pipe_connections
+        for j = 1, #pipe_connections do
+            local pipe_connection = pipe_connections[j]
+            local local_pos = pipe_connection.positions[1]
+            local x = local_pos.x
+            local y = local_pos.y
+            local d = pipe_connection.direction
+            -- mirror first, then rotate
+            if entity.mirroring then
+                x = -x
+                d = (16 - d) % 16
+            end
+            for _ = 1, entity.direction / 4 do
+                x, y = -y, x
+                d = (d + 4) % 16
+            end
+            local dir_vec = util.direction_vectors[d]
             -- floor operation rounds to nearest 0.5 to mimic pipe connection snapping behavior
-            if position[1] == math.floor((entity.position.x + offset.x + dir_vec[1] + 0.25) * 2) / 2 and
-                position[2] == math.floor((entity.position.y + offset.y + dir_vec[2] + 0.25) * 2) / 2 then
+            if position[1] == math.floor((entity.position.x + x + dir_vec[1] + 0.25) * 2) / 2 and
+                position[2] == math.floor((entity.position.y + y + dir_vec[2] + 0.25) * 2) / 2 then
                 return true
             end
         end
