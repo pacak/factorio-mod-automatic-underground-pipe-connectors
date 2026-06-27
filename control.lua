@@ -207,24 +207,12 @@ local function on_built_entity(event)
             end
         end
         if not place then
-            -- check for a matching non-pipe entity with a fluidbox connection
-            local neighbor_entities = underground_surface.find_entities( { candidate_pos, candidate_pos } )
-            for _,neighbor_entity in pairs(neighbor_entities) do
-                local entity_type = entity_type_or_ghost_type(neighbor_entity)
-                if entity_type == "fluid-wagon" then
-                    -- these have fluidbox connections for pumps, but not for pipes
-                    goto continue_neighbor_entities
-                end
-                if  ( entity_type ~= "pipe" and entity_type ~= "pipe-to-ground"
-                    ) and (
-                        neighbor_entity.fluidbox and
-                        #neighbor_entity.fluidbox > 0
-                    )
-                then
-                    if should_place_based_on_neighbor_fluidbox_prototypes(neighbor_entity, pipe_position) then
-                        place = true
-                        goto bail_neighbor_entities
-                    end
+            -- check for a matching non-pipe entity with a fluid connection
+            local neighbor_entities = underground_surface.find_entities({ candidate_pos, candidate_pos })
+            for _, neighbor_entity in pairs(neighbor_entities) do
+                if should_place_based_on_neighbor_fluidbox_prototypes(neighbor_entity, pipe_position) then
+                    place = true
+                    goto bail_neighbor_entities
                 end
                 ::continue_neighbor_entities::
             end
